@@ -4,3 +4,12 @@ from django.db import models
 
 class User(AbstractUser):
     pass
+
+class Listing(models.Model):
+    pass
+
+class Bidding(models.Model):
+    pass
+
+class Comment(models.Model):
+    pass
