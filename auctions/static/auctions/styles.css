@@ -1,3 +1,21 @@
 body {
     padding: 10px;
 }
+
+.form-group-1 {
+    color: blue;
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: right; 
+    
+    margin-right: 50px; 
+    margin-left: 3%;
+
+}
+
+
+/* .form-group label {
+    width: 100px; 
+    text-align: left; 
+} */
