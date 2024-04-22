@@ -1,6 +1,15 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
 <h3>Creat New listing</h3>
 
 <div class ="form-group-1">
