@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.urls import reverse
 from . import form
-from .models import User
+from .models import *
 
 
 def index(request):
@@ -72,8 +73,10 @@ def create_listing(request):
             description = new_listing.cleaned_data['description']
             ask_price = new_listing.cleaned_data['ask_price']
             category = new_listing.cleaned_data['category']
-            
-        
+            listing = Listing.objects.create(title=title, description=description,ask_price=ask_price, category=category)
+            listing.save()
+            messages.success(request,'Data has been submitted')
+            return redirect(reverse('create_listing') )
 
     return render(request, "auctions/create_listing.html",{
          "form": form.NewListingForm()
