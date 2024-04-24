@@ -1,8 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render,redirect
+from django.utils import timezone
 from django.urls import reverse
 from . import form
 from .models import *
@@ -62,22 +65,26 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
-
+@login_required
 def create_listing(request):
 
     if request.method == "POST":
         new_listing  = form.NewListingForm(request.POST)
 
         if new_listing.is_valid():
+            owner = request.user.username
             title = new_listing.cleaned_data['title']
             description = new_listing.cleaned_data['description']
             ask_price = new_listing.cleaned_data['ask_price']
             category = new_listing.cleaned_data['category']
-            listing = Listing.objects.create(title=title, description=description,ask_price=ask_price, category=category)
+            imagelink = new_listing.cleaned_data['imagalink']
+            listing = Listing.objects.create(owner=owner,title=title, 
+                        description=description,ask_price=ask_price, category=category,
+                        imagelink=imagelink)
             listing.save()
             messages.success(request,'Data has been submitted')
             return redirect(reverse('create_listing') )
-
+    
     return render(request, "auctions/create_listing.html",{
          "form": form.NewListingForm()
          })
