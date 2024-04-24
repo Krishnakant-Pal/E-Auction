@@ -19,5 +19,8 @@ class NewListingForm(forms.Form):
         choices=CATAGORIES_CHOICES,
         widget=forms.SelectMultiple(attrs={'class': 'form-control'})
     )
-    # category  = models.CharField(max_length=5,choices=CATAGORIES_CHOICES,null=True)
+    imagalink = forms.CharField(label="imagelink",required=False,
+                widget=forms.TextInput(attrs={'placeholder': 'Optional Image Link ','class': 'form-control'})
+                )                
+    
     
