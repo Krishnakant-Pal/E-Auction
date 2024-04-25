@@ -2,5 +2,24 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-    TODO
+    
+    {% for listing in listings %}
+    <div class="container">
+        <div class="row">
+            <div class="col"> 
+                <div class="card w-100">
+                    <img src="{{listing.imagelink}}" class="card-img-top" alt="{{listing.title}}">
+                    <div class="card-body">
+                    <h5 class="card-title">{{listing.title}}</h5>
+                    <p class="card-text">{{listing.description}}</p>
+                    <strong class ="card-text">Ask Price:{{listing.ask_price}}</strong>
+                    <!-- <a href="" class="btn btn-primary">View</a> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    {% endfor %}
+    
 {% endblock %}
