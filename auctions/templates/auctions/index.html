@@ -1,25 +1,26 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+<h2>Active Listings</h2>
     
-    {% for listing in listings %}
-    <div class="container">
-        <div class="row">
-            <div class="col"> 
-                <div class="card w-100">
+<div class="container mt-5">
+    <div class="row  ">
+        {% for listing in listings %}
+            <div class="col-md-4 mb-3 mt-3"> 
+                <div class="product-card card" id="{{listing.title}}">
                     <img src="{{listing.imagelink}}" class="card-img-top" alt="{{listing.title}}">
                     <div class="card-body">
-                    <h5 class="card-title">{{listing.title}}</h5>
-                    <p class="card-text">{{listing.description}}</p>
-                    <strong class ="card-text">Ask Price:{{listing.ask_price}}</strong>
-                    <!-- <a href="" class="btn btn-primary">View</a> -->
+                        <h5 class="card-title">{{listing.title}}</h5>
+                        <p class="card-text">{{listing.description}}</p>
+                        <strong class ="card-text">Ask Price:{{listing.ask_price}}</strong>
+                        <!-- <a href="" class="btn btn-primary">View</a> -->
+                    </div>
                 </div>
             </div>
-        </div>
+        {% endfor %}
     </div>
+</div> 
 
-    </div>
-    {% endfor %}
-    
+
+
 {% endblock %}
