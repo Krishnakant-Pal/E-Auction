@@ -1,0 +1,30 @@
+{% extends "auctions/layout.html" %}
+
+
+{% block body %}
+
+<div class="container-fluid">
+            <div class="card mb-3" >
+                <div class="row no-gutters">
+                    <div class="col-sm-12 col-md-4 ">
+                        <img src="{{ product.imagelink }}" class="img-fluid" alt="...">
+                    </div>
+                    <div class="col-sm-12 col-md-8 ">
+                        <div class="card-body">
+                            <h5 class="card-title">{{product.title}}</h5>
+                            <p class="card-text">{{product.description }}</p>
+                            <strong class="card-text">₹{{max_bid}}.00</strong>
+                            <p class="card-text">Current number of bids: {{number_of_bids}}</p>
+                            <input type="number" class="form-control w-25 " placeholder="Add your bid">
+                            <br>
+                            <input type="button" class="btn btn-primary" placeholder="Bid" value="Bid">
+                            <input type="button" class="btn btn-primary" placeholder="Watchlist" value="Add to Watchlist">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

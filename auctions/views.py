@@ -1,8 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
 from django.db import IntegrityError
+from django.db.models import Count,Max
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render,redirect
 from django.utils import timezone
@@ -10,12 +10,11 @@ from django.urls import reverse
 from . import form
 from .models import *
 
-
 def index(request):
     listings = Listing.objects.all()
     
     return render(request, "auctions/index.html",{
-        "listings":listings
+        "listings":listings,
     })
 
 def login_view(request):
@@ -93,3 +92,19 @@ def create_listing(request):
          "form": form.NewListingForm()
          })
 
+
+def listing_details(request,listing_title): 
+
+    product = Listing.objects.get(title=listing_title)
+    bids  = Bidding.objects.filter(listing=product.id)
+    comments = Comment.objects.filter(listing=product.id)
+    number_of_bids  = Bidding.objects.filter(listing=product.id).count()
+    max_bid = bids.aggregate(max_bid = Max("bid_price"))["max_bid"]
+        
+
+    return render(request,"auctions/listing_details.html",{
+        "product": product,
+        "max_bid":max_bid,
+        "number_of_bids": number_of_bids,
+        "comments": comments,
+         })
