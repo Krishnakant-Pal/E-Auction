@@ -4,13 +4,15 @@ from django.contrib import messages
 from django.db import IntegrityError
 from django.db.models import Count,Max
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.utils import timezone
 from django.urls import reverse
 from . import form
 from .models import *
 
 def index(request):
+    """ Get all the Active listings and return them"""
+
     listings = Listing.objects.all()
     
     return render(request, "auctions/index.html",{
@@ -70,7 +72,7 @@ def register(request):
 
 @login_required
 def create_listing(request):
-
+    """ Lets user create a listing """
     if request.method == "POST":
         new_listing  = form.NewListingForm(request.POST)
 
@@ -84,7 +86,7 @@ def create_listing(request):
             listing = Listing.objects.create(owner=owner,title=title, 
                         description=description,ask_price=ask_price, category=category,
                         imagelink=imagelink)
-            listing.save()
+            
             messages.success(request,'Data has been submitted')
             return redirect(reverse('create_listing') )
     
@@ -92,19 +94,63 @@ def create_listing(request):
          "form": form.NewListingForm()
          })
 
+def get_listing_details(listing_title):
+    pass
+
+
 
 def listing_details(request,listing_title): 
-
-    product = Listing.objects.get(title=listing_title)
+    product = get_object_or_404(Listing, title=listing_title)
     bids  = Bidding.objects.filter(listing=product.id)
+    max_bid = bids.aggregate(max_bid = Max("bid_price"))["max_bid"]
     comments = Comment.objects.filter(listing=product.id)
     number_of_bids  = Bidding.objects.filter(listing=product.id).count()
-    max_bid = bids.aggregate(max_bid = Max("bid_price"))["max_bid"]
+    
+
+    # Incase of no bidding maxbid is equal to ask price
+    if not max_bid :
+        max_bid = product.ask_price
+
+
+    if request.method == "POST":
+        bid_form = form.BidForm(request.POST)
         
+        if bid_form.is_valid():
+            new_bid_price = bid_form.cleaned_data['bid_price']            
+            if new_bid_price <= max_bid:
+                # bid is less than maxbid then return with message
+                return render(request,"auctions/listing_details.html",{
+                                "product": product,
+                                "max_bid":max_bid,
+                                "number_of_bids": number_of_bids,
+                                "comments": comments,
+                                "bid_form": bid_form,
+                                "message": "Bid price should be more that current price"
+                                })
+            else: 
+                # Accepts the new bid
+                new_bid = Bidding.objects.create(user=request.user,bid_price=new_bid_price, 
+                            number_of_item=1,listing=product)
+                product = get_object_or_404(Listing, title=listing_title)
+                bids  = Bidding.objects.filter(listing=product.id)
+                max_bid = bids.aggregate(max_bid = Max("bid_price"))["max_bid"]
+                comments = Comment.objects.filter(listing=product.id)
+                number_of_bids  = Bidding.objects.filter(listing=product.id).count()
+
+                return render(request,"auctions/listing_details.html",{
+                    "product": product,
+                    "max_bid":max_bid,
+                    "number_of_bids": number_of_bids,
+                    "comments": comments,
+                    "bid_form": form.BidForm
+                    })
+    else:
+            bid_form = form.BidForm()
 
     return render(request,"auctions/listing_details.html",{
         "product": product,
         "max_bid":max_bid,
         "number_of_bids": number_of_bids,
         "comments": comments,
+        "bid_form": form.BidForm
          })

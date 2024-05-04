@@ -2,7 +2,7 @@
 
 
 {% block body %}
-
+{{message}}
 <div class="container-fluid">
             <div class="card mb-3" >
                 <div class="row no-gutters">
@@ -15,9 +15,15 @@
                             <p class="card-text">{{product.description }}</p>
                             <strong class="card-text">₹{{max_bid}}.00</strong>
                             <p class="card-text">Current number of bids: {{number_of_bids}}</p>
-                            <input type="number" class="form-control w-25 " placeholder="Add your bid">
+                            
+                            
+                            <form action="{% url 'listing_details' product.title %}"{{product.title}} method="POST">
+                                {% csrf_token %}
+                                {{bid_form}}
+                                <br>
+                                <input type="submit" class="btn btn-primary" placeholder="Bid" value="Bid">
+                            </form>
                             <br>
-                            <input type="button" class="btn btn-primary" placeholder="Bid" value="Bid">
                             <input type="button" class="btn btn-primary" placeholder="Watchlist" value="Add to Watchlist">
                         </div>
                     </div>
