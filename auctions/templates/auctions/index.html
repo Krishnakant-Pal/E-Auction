@@ -22,7 +22,7 @@
                         <p class="card-text">{{listing.description}}</p>
 
                         <div class = "mt-auto d-flex flex-column"> 
-                            <strong class ="card-text">Current Price:{{listing.ask_price}}</strong>
+                            <strong class ="card-text">Current Price:₹{{listing.ask_price}}</strong>
                             <a href="{% url 'listing_details' listing.title  %}" {{listing.title}} class="btn btn-primary  mt-2">View</a>
                         </div>
                     </div>
