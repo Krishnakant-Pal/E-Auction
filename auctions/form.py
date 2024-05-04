@@ -1,5 +1,5 @@
 from django import forms
-from .models import CATAGORIES_CHOICES
+from .models import CATEGORIES_CHOICES
 
 class NewListingForm(forms.Form):
 
@@ -16,7 +16,7 @@ class NewListingForm(forms.Form):
     
     category = forms.MultipleChoiceField(label="Category",
         required=True,
-        choices=CATAGORIES_CHOICES,
+        choices=CATEGORIES_CHOICES,
         widget=forms.SelectMultiple(attrs={'class': 'form-control'})
     )
     imagalink = forms.CharField(label="imagelink",required=False,
