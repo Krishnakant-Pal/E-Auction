@@ -23,4 +23,7 @@ class NewListingForm(forms.Form):
                 widget=forms.TextInput(attrs={'placeholder': 'Optional Image Link ','class': 'form-control'})
                 )                
     
-    
+class BidForm(forms.Form):
+    bid_price = forms.IntegerField(label=False,required=True, 
+                widget=forms.NumberInput(attrs={'placeholder': 'Add your bid','class': 'form-control w-25'})
+                )
