@@ -12,7 +12,7 @@ from .models import *
 
 def index(request):
     """ Get all the Active listings and return them"""
-    
+
     listings = Listing.objects.all()
     
     return render(request, "auctions/index.html",{
@@ -113,11 +113,16 @@ def listing_details(request,listing_title):
 
 
     if request.method == "POST":
+
+        if not request.user.is_authenticated:
+            return render(request, "auctions/login.html")
+
         bid_form = form.BidForm(request.POST)
+
         
         if bid_form.is_valid():
             new_bid_price = bid_form.cleaned_data['bid_price']            
-            if new_bid_price <= max_bid:
+            if new_bid_price <= max_bid :
                 # bid is less than maxbid then return with message
                 return render(request,"auctions/listing_details.html",{
                                 "product": product,
