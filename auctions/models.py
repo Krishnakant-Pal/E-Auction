@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser,User
 from django.db import models
 
 
@@ -11,22 +11,24 @@ CATEGORIES_CHOICES = {
         ("B" ,"Books"),
         ("H&K","Home & Kitchen"),
         ("T", "Toys"),
-
+        (" ", "Others")
 }
 class Listing(models.Model):
-    owner = models.CharField(max_length=64)
-    title = models.CharField(max_length=64)
-    description = models.CharField(max_length=248)
+    owner = models.ForeignKey(User,on_delete=models.CASCADE)
+    title = models.CharField(max_length=128)
+    description = models.CharField(max_length=500)
     ask_price = models.IntegerField()
     category  = models.CharField(max_length=5,choices=CATEGORIES_CHOICES,null=True)
     creation_date = models.DateTimeField(auto_now=True)
     imagelink = models.CharField(max_length=128,default=False)
+    active = models.BooleanField(default=True)
+    winners = models.ForeignKey(User,null = True, blank=True, on_delete=models.SET_NULL, related_name='won_listings')
    
     def __str__(self):
         return f"Owner:{self.owner},Title: {self.title},Ask_Price: {self.ask_price},Category: {self.category},Creation_Date: {self.creation_date}"
 
 class Bidding(models.Model):
-    user = models.CharField(max_length=64)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
     bid_price = models.IntegerField()
     number_of_item = models.IntegerField()
     listing = models.ForeignKey(Listing,on_delete=models.CASCADE)
@@ -35,7 +37,7 @@ class Bidding(models.Model):
         return f"User:{self.user} ,Bid Price {self.bid_price},No. of items:{self.number_of_item},listing: {self.listing}"
 
 class Comment(models.Model):
-    user = models.CharField(max_length=64)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing,on_delete=models.CASCADE)
     comment = models.CharField(max_length=248)
 
@@ -43,7 +45,7 @@ class Comment(models.Model):
         return f"user:{self.user},listing: {self.listing},Comment: {self.comment}"
 
 class Watchlist(models.Model):
-    user = models.CharField(max_length=64)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing,on_delete=models.CASCADE)
 
 

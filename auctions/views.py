@@ -12,7 +12,7 @@ from .models import *
 
 def index(request):
     """ Get all the Active listings and return them"""
-
+    
     listings = Listing.objects.all()
     
     return render(request, "auctions/index.html",{
@@ -77,7 +77,7 @@ def create_listing(request):
         new_listing  = form.NewListingForm(request.POST)
 
         if new_listing.is_valid():
-            owner = request.user.username
+            owner = request.user
             title = new_listing.cleaned_data['title']
             description = new_listing.cleaned_data['description']
             ask_price = new_listing.cleaned_data['ask_price']
