@@ -95,23 +95,24 @@ def create_listing(request):
          })
 
 def get_listing_details(listing_title):
-    pass
-
-
-def listing_details(request,listing_title): 
     product = get_object_or_404(Listing, title=listing_title)
     bids  = Bidding.objects.filter(listing=product.id)
     max_bid = bids.aggregate(max_bid = Max("bid_price"))["max_bid"]
     comments = Comment.objects.filter(listing=product.id)
     number_of_bids  = Bidding.objects.filter(listing=product.id).count()
-    in_watchlist = Watchlist.objects.filter( listing=product,user = request.user)
-
     
     # Incase of no bidding maxbid is equal to ask price
-    if not max_bid :
+    if not max_bid:
         max_bid = product.ask_price
 
+    return product, max_bid, comments, number_of_bids
 
+
+def listing_details(request,listing_title): 
+
+    product, max_bid, comments, number_of_bids = get_listing_details(listing_title)
+    in_watchlist = Watchlist.objects.filter( listing=product,user = request.user)
+   
     if request.method == "POST":
         # If user is not logged in then redirect to login page
         if not request.user.is_authenticated:
@@ -124,33 +125,13 @@ def listing_details(request,listing_title):
             new_bid_price = bid_form.cleaned_data['bid_price']            
             if new_bid_price <= max_bid :
                 # bid is less than maxbid then return with message
-                return render(request,"auctions/listing_details.html",{
-                                "product": product,
-                                "max_bid":max_bid,
-                                "number_of_bids": number_of_bids,
-                                "comments": comments,
-                                "bid_form": bid_form,
-                                "in_watchlist": in_watchlist,
-                                "message": "Bid price should be more that current price"
-                                })
+                message = "Bid price should be more that current price"
             else: 
                 # Accepts the new bid
                 new_bid = Bidding.objects.create(user=request.user,bid_price=new_bid_price, 
                             number_of_item=1,listing=product)
-                product = get_object_or_404(Listing, title=listing_title)
-                bids  = Bidding.objects.filter(listing=product.id)
-                max_bid = bids.aggregate(max_bid = Max("bid_price"))["max_bid"]
-                comments = Comment.objects.filter(listing=product.id)
-                number_of_bids  = Bidding.objects.filter(listing=product.id).count()
-
-                return render(request,"auctions/listing_details.html",{
-                    "product": product,
-                    "max_bid":max_bid,
-                    "number_of_bids": number_of_bids,
-                    "comments": comments,
-                    "in_watchlist": in_watchlist,
-                    "bid_form": form.BidForm
-                    })
+                return redirect('listing_details', listing_title=listing_title)
+            
     else:
             bid_form = form.BidForm()
 
@@ -160,7 +141,8 @@ def listing_details(request,listing_title):
         "number_of_bids": number_of_bids,
         "comments": comments,
         "in_watchlist": in_watchlist,
-        "bid_form": form.BidForm
+        "bid_form": form.BidForm,
+        "message": message if request.method == "POST" else None
          })
 
 
