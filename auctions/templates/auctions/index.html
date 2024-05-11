@@ -9,7 +9,7 @@
 
         {% for listing in listings %}
             <div class="col mb-5 "> 
-                <div class="product-card card h-100  flex-column" id="{{listing.title}}">
+                <div class="product-card card h-100  flex-column" id="{{listing.id}}">
 
                     {% if listing.imagelink != "False" %}
                         <img src="{{listing.imagelink}}" class="card-img-top" alt="{{listing.title}}">
@@ -23,7 +23,7 @@
 
                         <div class = "mt-auto d-flex flex-column"> 
                             <strong class ="card-text">Current Price:₹{{listing.ask_price}}</strong>
-                            <a href="{% url 'listing_details' listing.title  %}" {{listing.title}} class="btn btn-primary  mt-2">View</a>
+                            <a href="{% url 'listing_details' listing.id  %}" {{ listing.id }} class="btn btn-primary  mt-2">View</a>
                         </div>
                     </div>
                 </div>

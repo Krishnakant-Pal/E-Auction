@@ -94,8 +94,8 @@ def create_listing(request):
          "form": form.NewListingForm()
          })
 
-def get_listing_details(listing_title):
-    product = get_object_or_404(Listing, title=listing_title)
+def get_listing_details(listing_id):
+    product = get_object_or_404(Listing, pk=listing_id)
     bids  = Bidding.objects.filter(listing=product.id)
     max_bid = bids.aggregate(max_bid = Max("bid_price"))["max_bid"]
     comments = Comment.objects.filter(listing=product.id)
@@ -108,10 +108,10 @@ def get_listing_details(listing_title):
     return product, max_bid, comments, number_of_bids
 
 
-def listing_details(request,listing_title): 
+def listing_details(request,listing_id): 
 
-    product, max_bid, comments, number_of_bids = get_listing_details(listing_title)
-    in_watchlist = Watchlist.objects.filter( listing=product,user = request.user)
+    product, max_bid, comments, number_of_bids = get_listing_details(listing_id)
+    in_watchlist = Watchlist.objects.filter(listing=product,user = request.user)
    
     if request.method == "POST":
         # If user is not logged in then redirect to login page
@@ -129,9 +129,9 @@ def listing_details(request,listing_title):
             else: 
                 # Accepts the new bid
                 new_bid = Bidding.objects.create(user=request.user,bid_price=new_bid_price, 
-                            number_of_item=1,listing=product)
-                return redirect('listing_details', listing_title=listing_title)
-            
+                                               number_of_item=1, listing=product)
+                return redirect('listing_details', listing_id=listing_id)
+
     else:
             bid_form = form.BidForm()
 
@@ -147,8 +147,8 @@ def listing_details(request,listing_title):
 
 
 @login_required
-def add_to_watchlist(request,listing_title):
-    listing = get_object_or_404(Listing, title=listing_title)
+def add_to_watchlist(request,listing_id):
+    listing = get_object_or_404(Listing, pk=listing_id)
     already_exits = Watchlist.objects.filter( listing=listing,user = request.user)
     # Check if listing is already present in watchlist
     if already_exits:
@@ -159,4 +159,4 @@ def add_to_watchlist(request,listing_title):
         # add listing to watchlist
         new_watchlist = Watchlist.objects.create(user=request.user, listing=listing)
 
-    return redirect(reverse('listing_details',args=[listing_title]) )
+    return redirect(reverse('listing_details',args=[listing_id]) )
