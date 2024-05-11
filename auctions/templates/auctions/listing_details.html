@@ -16,7 +16,6 @@
                             <strong class="card-text">₹{{max_bid}}.00</strong>
                             <p class="card-text">Current number of bids: {{number_of_bids}}</p>
                             
-                            
                             <form action="{% url 'listing_details' product.title %}"{{product.title}} method="POST">
                                 {% csrf_token %}
                                 {{bid_form}}
@@ -24,7 +23,14 @@
                                 <input type="submit" class="btn btn-primary" placeholder="Bid" value="Bid">
                             </form>
                             <br>
-                            <input type="button" class="btn btn-primary" placeholder="Watchlist" value="Add to Watchlist">
+                            <form action="{% url 'add_to_watchlist' product.title %}" {{product.title}} method="POST">
+                                {% csrf_token %}
+                                {% if in_watchlist %}
+                                    <input type="submit" class="btn btn-primary" placeholder="Watchlist" value="Remove from Watchlist">
+                                {% else %}
+                                    <input type="submit" class="btn btn-primary" placeholder="Watchlist" value="Add to Watchlist">
+                                {% endif %}
+                            </form>
                         </div>
                     </div>
                 </div>

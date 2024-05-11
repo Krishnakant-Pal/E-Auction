@@ -98,22 +98,22 @@ def get_listing_details(listing_title):
     pass
 
 
-
 def listing_details(request,listing_title): 
     product = get_object_or_404(Listing, title=listing_title)
     bids  = Bidding.objects.filter(listing=product.id)
     max_bid = bids.aggregate(max_bid = Max("bid_price"))["max_bid"]
     comments = Comment.objects.filter(listing=product.id)
     number_of_bids  = Bidding.objects.filter(listing=product.id).count()
-    
+    in_watchlist = Watchlist.objects.filter( listing=product,user = request.user)
 
+    
     # Incase of no bidding maxbid is equal to ask price
     if not max_bid :
         max_bid = product.ask_price
 
 
     if request.method == "POST":
-
+        # If user is not logged in then redirect to login page
         if not request.user.is_authenticated:
             return render(request, "auctions/login.html")
 
@@ -130,6 +130,7 @@ def listing_details(request,listing_title):
                                 "number_of_bids": number_of_bids,
                                 "comments": comments,
                                 "bid_form": bid_form,
+                                "in_watchlist": in_watchlist,
                                 "message": "Bid price should be more that current price"
                                 })
             else: 
@@ -147,6 +148,7 @@ def listing_details(request,listing_title):
                     "max_bid":max_bid,
                     "number_of_bids": number_of_bids,
                     "comments": comments,
+                    "in_watchlist": in_watchlist,
                     "bid_form": form.BidForm
                     })
     else:
@@ -157,5 +159,22 @@ def listing_details(request,listing_title):
         "max_bid":max_bid,
         "number_of_bids": number_of_bids,
         "comments": comments,
+        "in_watchlist": in_watchlist,
         "bid_form": form.BidForm
          })
+
+
+@login_required
+def add_to_watchlist(request,listing_title):
+    listing = get_object_or_404(Listing, title=listing_title)
+    already_exits = Watchlist.objects.filter( listing=listing,user = request.user)
+    # Check if listing is already present in watchlist
+    if already_exits:
+        # remove listing from watchlist
+        already_exits.delete()
+       
+    else:
+        # add listing to watchlist
+        new_watchlist = Watchlist.objects.create(user=request.user, listing=listing)
+
+    return redirect(reverse('listing_details',args=[listing_title]) )
