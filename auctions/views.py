@@ -13,8 +13,8 @@ from .models import *
 def index(request):
     """ Get all the Active listings and return them"""
 
-    listings = Listing.objects.all()
-    
+    listings = Listing.objects.filter(active=True)
+
     return render(request, "auctions/index.html",{
         "listings":listings,
     })
@@ -160,3 +160,34 @@ def add_to_watchlist(request,listing_id):
         new_watchlist = Watchlist.objects.create(user=request.user, listing=listing)
 
     return redirect(reverse('listing_details',args=[listing_id]) )
+
+@login_required
+def close_bid(request,listing_id):
+    """Close the listing and determines the winners of the listings"""
+    listing = get_object_or_404(Listing, pk=listing_id)
+    
+    highest_bidder = Bidding.objects.filter(listing_id=listing_id).order_by('-bid_price').first()
+
+    if highest_bidder is not None: 
+        # make the highest bid winner
+        listing.winner = highest_bidder.user
+        listing.winning_bid = highest_bidder.bid_price
+
+    else: 
+        #zero bid then winner is none
+        listing.winner = None
+
+    listing.active = False
+    listing.save()
+    
+    return HttpResponseRedirect(reverse("closed_listings"))
+
+@login_required
+def closed_listings(request):
+    """ Lists all the closed listings """
+
+    listings = Listing.objects.filter(active=False)
+
+    return render(request, "auctions/closed_listings.html",{
+        "listings":listings,
+    })
