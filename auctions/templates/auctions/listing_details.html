@@ -19,6 +19,8 @@
                             <p class="card-text">Current number of bids: {{number_of_bids}}</p>
                             {% if product.owner == request.user %}
                                 <a href="{% url 'close_bid' product.id %}" class="btn btn-primary"> Close Bid </a>
+                            {% elif product.winner == request.user %}
+                                <strong class="card-text">Congratulations you have won the bid</strong>
                             {% else %}
                                 <form action="{% url 'listing_details' product.id %}"{{product.id}} method="POST">
                                     {% csrf_token %}
@@ -36,9 +38,7 @@
                                         <input type="submit" class="btn btn-primary" placeholder="Watchlist" value="Add to Watchlist">
                                     {% endif %}
                                 </form>
-                            {% endif %}
-
-                            
+                            {% endif %}  
                         </div>
                     </div>
                 </div>
