@@ -20,9 +20,10 @@ class Listing(models.Model):
     ask_price = models.IntegerField()
     category  = models.CharField(max_length=5,choices=CATEGORIES_CHOICES,null=True)
     creation_date = models.DateTimeField(auto_now=True)
-    imagelink = models.CharField(max_length=128,default=False)
+    imagelink = models.CharField(max_length=128,default=False,null=True,blank=True)
     active = models.BooleanField(default=True)
-    winners = models.ForeignKey(User,null = True, blank=True, on_delete=models.SET_NULL, related_name='won_listings')
+    winner = models.ForeignKey(User,null = True, blank=True, on_delete=models.SET_NULL, related_name='won_listings')
+    winning_bid = models.IntegerField(null=True,default=0)
    
     def __str__(self):
         return f"Owner:{self.owner},Title: {self.title},Ask_Price: {self.ask_price},Category: {self.category},Creation_Date: {self.creation_date}"
