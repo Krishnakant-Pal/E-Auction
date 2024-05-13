@@ -70,7 +70,7 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
-@login_required
+@login_required(login_url='/login')
 def create_listing(request):
     """ Lets user create a listing """
     if request.method == "POST":
@@ -108,10 +108,17 @@ def get_listing_details(listing_id):
     return product, max_bid, comments, number_of_bids
 
 
+
 def listing_details(request,listing_id): 
 
     product, max_bid, comments, number_of_bids = get_listing_details(listing_id)
-    in_watchlist = Watchlist.objects.filter(listing=product,user = request.user)
+
+    # checks if product is already in watchlist and if user not signed in then return none
+    try: 
+        in_watchlist = Watchlist.objects.filter(listing=product,user = request.user)
+    
+    except:
+            in_watchlist = False 
    
     if request.method == "POST":
         # If user is not logged in then redirect to login page
@@ -146,7 +153,7 @@ def listing_details(request,listing_id):
          })
 
 
-@login_required
+@login_required(login_url='/login')
 def add_to_watchlist(request,listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
     already_exits = Watchlist.objects.filter( listing=listing,user = request.user)
@@ -161,11 +168,11 @@ def add_to_watchlist(request,listing_id):
 
     return redirect(reverse('listing_details',args=[listing_id]) )
 
-@login_required
+@login_required(login_url='/login')
 def close_bid(request,listing_id):
     """Close the listing and determines the winners of the listings"""
     listing = get_object_or_404(Listing, pk=listing_id)
-    
+
     highest_bidder = Bidding.objects.filter(listing_id=listing_id).order_by('-bid_price').first()
 
     if highest_bidder is not None: 
@@ -182,7 +189,7 @@ def close_bid(request,listing_id):
     
     return HttpResponseRedirect(reverse("closed_listings"))
 
-@login_required
+
 def closed_listings(request):
     """ Lists all the closed listings """
 
