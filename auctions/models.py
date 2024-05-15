@@ -39,8 +39,9 @@ class Bidding(models.Model):
 
 class Comment(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    listing = models.ForeignKey(Listing,on_delete=models.CASCADE)
-    comment = models.CharField(max_length=248)
+    listing = models.ForeignKey(Listing,related_name="comments",on_delete=models.CASCADE)
+    comment = models.TextField()
+    date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"user:{self.user},listing: {self.listing},Comment: {self.comment}"

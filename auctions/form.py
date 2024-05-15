@@ -27,3 +27,9 @@ class BidForm(forms.Form):
     bid_price = forms.IntegerField(label=False,required=True, 
                 widget=forms.NumberInput(attrs={'placeholder': 'Add your bid','class': 'form-control w-25'})
                 )
+    
+class CommentForm(forms.Form):
+    comment = forms.CharField(label=False,required=True,
+                widget=forms.Textarea(attrs={'placeholder': 'Add your comments', 'class': 'form-control short-height'})
+         )
+    

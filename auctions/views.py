@@ -98,20 +98,18 @@ def get_listing_details(listing_id):
     product = get_object_or_404(Listing, pk=listing_id)
     bids  = Bidding.objects.filter(listing=product.id)
     max_bid = bids.aggregate(max_bid = Max("bid_price"))["max_bid"]
-    comments = Comment.objects.filter(listing=product.id)
     number_of_bids  = Bidding.objects.filter(listing=product.id).count()
     
     # Incase of no bidding maxbid is equal to ask price
     if not max_bid:
         max_bid = product.ask_price
 
-    return product, max_bid, comments, number_of_bids
-
-
+    return product, max_bid, number_of_bids
 
 def listing_details(request,listing_id): 
 
-    product, max_bid, comments, number_of_bids = get_listing_details(listing_id)
+    product, max_bid, number_of_bids = get_listing_details(listing_id)
+    message = None
 
     # checks if product is already in watchlist and if user not signed in then return none
     try: 
@@ -146,10 +144,10 @@ def listing_details(request,listing_id):
         "product": product,
         "max_bid":max_bid,
         "number_of_bids": number_of_bids,
-        "comments": comments,
+        "commentform": form.CommentForm,
         "in_watchlist": in_watchlist,
         "bid_form": form.BidForm,
-        "message": message if request.method == "POST" else None
+        "message": message 
          })
 
 
@@ -198,3 +196,15 @@ def closed_listings(request):
     return render(request, "auctions/closed_listings.html",{
         "listings":listings,
     })
+
+def comment_sent(request,listing_id):
+    """Takes post request for comments form the listings and adds comments to listings"""
+    listing = get_object_or_404(Listing, pk=listing_id)
+    if request.method == "POST":
+        commentform = form.CommentForm(request.POST)
+        if commentform.is_valid():
+            new_comment = commentform.cleaned_data["comment"]
+            comment = Comment.objects.create(user=request.user,listing=listing,
+                                            comment=new_comment,date_added=timezone.now())
+            return redirect('listing_details', listing_id=listing_id)
+            
