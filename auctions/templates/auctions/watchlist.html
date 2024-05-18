@@ -1,0 +1,31 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">Watchlist</h1>
+    <div class="row">
+        {% for watchlist_item in watchlists %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                {% if watchlist_item.listing.imagelink %}
+                        <img src="{{ watchlist_item.listing.imagelink }}" class="card-img-top" alt="Image">
+                    {% else %}
+                        <img src="{% static 'auctions/images/default_product_image.png' %}" class="card-img-top" alt="Image">
+                    {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url 'listing_details' watchlist_item.listing.id %}">
+                            {{ watchlist_item.listing.title }}
+                        </a>
+                    </h5>
+                    <p class="card-text">
+                        <strong>Seller:</strong> {{ watchlist_item.listing.owner }}<br>
+                        <strong>Ask Price:</strong> ₹{{ watchlist_item.listing.ask_price }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

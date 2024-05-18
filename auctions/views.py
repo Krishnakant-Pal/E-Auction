@@ -207,4 +207,12 @@ def comment_sent(request,listing_id):
             comment = Comment.objects.create(user=request.user,listing=listing,
                                             comment=new_comment,date_added=timezone.now())
             return redirect('listing_details', listing_id=listing_id)
-            
+
+@login_required(login_url='/login')           
+def watchlist(request):
+    user = request.user
+    user_watchlist = Watchlist.objects.filter(user=user)
+    return render(request, "auctions/watchlist.html",{ 
+                  'watchlists': user_watchlist,
+                  "user": user
+                  } )

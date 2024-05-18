@@ -11,7 +11,7 @@
             <div class="col mb-5 "> 
                 <div class="product-card card h-100  flex-column" id="{{listing.id}}">
 
-                    {% if listing.imagelink != "False" %}
+                    {% if listing.imagelink %}
                         <img src="{{listing.imagelink}}" class="card-img-top" alt="{{listing.title}}">
                     {% else %}
                         <img src="{% static 'auctions\images\default_product_image.png' %}" class="card-img-top flex-grow-1 "> 
@@ -22,7 +22,7 @@
                         <p class="card-text">{{listing.description}}</p>
 
                         <div class = "mt-auto d-flex flex-column"> 
-                            <strong class ="card-text">Current Price:₹{{listing.ask_price}}</strong>
+                            <strong class ="card-text">Ask Price:₹{{listing.ask_price}}</strong>
                             <a href="{% url 'listing_details' listing.id  %}" {{ listing.id }} class="btn btn-primary  mt-2">View</a>
                         </div>
                     </div>
@@ -30,9 +30,6 @@
             </div>
         {% endfor %}
     </div>
-
 </div> 
-
-
 
 {% endblock %}

@@ -1,5 +1,5 @@
 {% extends "auctions/layout.html" %}
-
+{% load static %}
 {% block body %}
 {% if message %}
     <div class="alert alert-danger">{{ message }}</div>
@@ -8,7 +8,11 @@
             <div class="card mb-3" >
                 <div class="row no-gutters">
                     <div class="col-sm-12 col-md-4 ">
-                        <img src="{{ product.imagelink }}" class="img-fluid" alt="...">
+                        {% if product.imagelink%}
+                            <img src="{{ product.imagelink }}" class="card-img-top" alt="Image">
+                        {% else %}
+                            <img src="{% static 'auctions/images/default_product_image.png' %}" class="card-img-top" alt="Image">
+                        {% endif %}
                     </div>
                     <div class="col-sm-12 col-md-8 ">
                         <div class="card-body">
