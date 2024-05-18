@@ -1,12 +1,12 @@
 {% extends "auctions/layout.html" %}
 {% load static %}
 {% block body %}
+<h2 >Watchlist</h2>  
 <div class="container mt-4">
-    <h1 class="mb-4">Watchlist</h1>
     <div class="row">
         {% for watchlist_item in watchlists %}
         <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100">
+            <div class="card h-100 border-primary">
                 {% if watchlist_item.listing.imagelink %}
                         <img src="{{ watchlist_item.listing.imagelink }}" class="card-img-top" alt="Image">
                     {% else %}
