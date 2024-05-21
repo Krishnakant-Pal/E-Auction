@@ -71,22 +71,22 @@ Watchlist: Add or remove listings from your watchlist.
 
 Home page showing active listings
 [media\Active.png]
-![Home page](media\Active.png)
+![Home page](media/Active.png)
 
 Listing page with bidding and commenting features
-![Listing page](media\listing.png)
+![Listing page](media/listing.png)
 
 User's watchlist page
-![Watchlist](media\watchlist.png)
+![Watchlist](media/watchlist.png)
 
 Create new listing page
-![Create New listing](media\create_listing.png)
+![Create New listing](media/create_listing.png)
 
 Close bidding option to the seller
-![Close bidding option](media\close_bidding_option.png)
+![Close bidding option](media/close_bidding_option.png)
 
 Closed bidding page
-![Close bidding page](media\closedlisting_page.png)
+![Close bidding page](media/closedlisting_page.png)
 
 ### Author
 Krishnakant Pal
